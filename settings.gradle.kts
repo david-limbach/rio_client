@@ -16,12 +16,12 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("assertj", "3.23.1")
-            version("junit", "5.11.4")
-            version("kotlin", "2.1.10")
-            version("kotlinLogging", "7.0.3")
+            version("assertj", "3.27.0")
+            version("junit", "5.12.0")
+            version("kotlin", "2.1.20")
+            version("kotlinLogging", "7.0.5")
             version("kotlinxCoroutines", "1.10.1")
-            version("ktor", "3.0.3")
+            version("ktor", "3.1.3")
 
             library("kotlinBom", "org.jetbrains.kotlin", "kotlin-bom").versionRef("kotlin")
             library("kotlinLogging", "io.github.oshai", "kotlin-logging").versionRef("kotlinLogging")

@@ -956,23 +956,23 @@ class RioClient(
         return client.myGet("$api/user", paramMap = paramMap)
     }
 
-    suspend fun getUserLogin(username: String): UserResponse = client.myGet("$api/user/$username")
+    suspend fun getUserLogin(userId: UUID): UserResponse = client.myGet("$api/user/$userId")
 
-    suspend fun headUserLogin(username: String): Boolean = client.myHead("$api/user/$username")
+    suspend fun headUserLogin(userId: UUID): Boolean = client.myHead("$api/user/$userId")
 
     suspend fun createUserLogin(userCreateRequest: UserCreateRequest): UserResponse = client.myPost("$api/user", userCreateRequest)
 
     suspend fun updateUserLogin(
-        username: String,
+        userId: UUID,
         userUpdateRequest: UserUpdateRequest,
-    ): UserResponse = client.myPut("$api/user/$username", userUpdateRequest)
+    ): UserResponse = client.myPut("$api/user/$userId", userUpdateRequest)
 
-    suspend fun deleteUserLogin(username: String): EmptyResponse = client.myDelete("$api/user/$username")
+    suspend fun deleteUserLogin(userId: UUID,): EmptyResponse = client.myDelete("$api/user/$userId")
 
     suspend fun updateUserPassword(
-        username: String,
+        userId: UUID,
         userUpdatePasswordRequest: UserUpdatePasswordRequest,
-    ): UserResponse = client.myPut("$api/user/$username/password", userUpdatePasswordRequest)
+    ): UserResponse = client.myPut("$api/user/$userId/password", userUpdatePasswordRequest)
 
     /**
      * Config

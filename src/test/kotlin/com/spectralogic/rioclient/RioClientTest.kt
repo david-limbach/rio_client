@@ -5,7 +5,6 @@
  */
 package com.spectralogic.rioclient
 
-import io.ktor.client.request.request
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -1713,8 +1712,9 @@ class RioClientTest {
         blockingTest {
             val username = "user-${uuid()}"
             val password = "wordpass"
+            var userId = UUID.randomUUID()
 
-            assertThat(rioClient.headUserLogin(username)).isFalse()
+            assertThat(rioClient.headUserLogin(userId)).isFalse()
             rioClient
                 .createUserLogin(
                     UserCreateRequest(username, username, password, false, true, "Operator"),
@@ -1725,19 +1725,21 @@ class RioClientTest {
                     assertThat(resp.active).isFalse()
                     assertThat(resp.local).isTrue()
                     assertThat(resp.role).isEqualTo("Operator")
+                    userId = resp.userId
                 }
-            assertThat(rioClient.headUserLogin(username)).isTrue()
+            assertThat(rioClient.headUserLogin(userId)).isTrue()
+            // TODO API needs refactoring
             assertThrows<RioHttpException> {
                 rioClient.getBearerToken(username, "bad-password")
             }
-            rioClient.getUserLogin(username).let { resp ->
+            rioClient.getUserLogin(userId).let { resp ->
                 assertThat(resp.statusCode).isEqualTo(HttpStatusCode.OK)
                 assertThat(resp.username).isEqualTo(username)
                 assertThat(resp.active).isFalse()
                 assertThat(resp.local).isTrue()
                 assertThat(resp.role).isEqualTo("Operator")
             }
-            rioClient.updateUserLogin(username, UserUpdateRequest(true, "Operator")).let { resp ->
+            rioClient.updateUserLogin(userId, UserUpdateRequest(true, "Operator")).let { resp ->
                 assertThat(resp.statusCode).isEqualTo(HttpStatusCode.OK)
                 assertThat(resp.username).isEqualTo(username)
                 assertThat(resp.active).isTrue()
@@ -1753,10 +1755,11 @@ class RioClientTest {
             rioClient.listUserLogins().let { resp ->
                 assertThat(resp.statusCode).isEqualTo(HttpStatusCode.OK)
                 assertThat(resp.users.map { it.username }).contains(username)
+                assertThat(resp.users.map { it.userId }).contains(userId)
             }
             rioClient
                 .updateUserLogin(
-                    username,
+                    userId,
                     UserUpdateRequest(true, "Administrator"),
                 ).let { resp ->
                     assertThat(resp.statusCode).isEqualTo(HttpStatusCode.OK)
@@ -1767,7 +1770,7 @@ class RioClientTest {
                 }
             rioClient
                 .updateUserPassword(
-                    username,
+                    userId,
                     UserUpdatePasswordRequest("new-password"),
                 ).let { resp ->
                     assertThat(resp.statusCode).isEqualTo(HttpStatusCode.OK)
@@ -1776,10 +1779,10 @@ class RioClientTest {
                     assertThat(resp.local).isTrue()
                     assertThat(resp.role).isEqualTo("Administrator")
                 }
-            rioClient.deleteUserLogin(username).let { resp ->
+            rioClient.deleteUserLogin(userId).let { resp ->
                 assertThat(resp.statusCode).isEqualTo(HttpStatusCode.NoContent)
             }
-            assertThat(rioClient.headUserLogin(username)).isFalse()
+            assertThat(rioClient.headUserLogin(userId)).isFalse()
         }
 
     @Test
