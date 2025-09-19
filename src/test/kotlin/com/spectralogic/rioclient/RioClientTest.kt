@@ -1717,7 +1717,7 @@ class RioClientTest {
             assertThat(rioClient.headUserLogin(userId)).isFalse()
             rioClient
                 .createUserLogin(
-                    UserCreateRequest(username, username, password, false, true, "Operator"),
+                    UserCreateRequest(username, username, password, false, true, "Operator", null),
                 ).let { resp ->
                     assertThat(resp.statusCode).isEqualTo(HttpStatusCode.Created)
                     assertThat(resp.username).isEqualTo(username)

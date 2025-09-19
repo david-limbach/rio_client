@@ -16,6 +16,7 @@ data class UserCreateRequest(
     val active: Boolean,
     val local: Boolean,
     val role: String,
+    val domainUuid: String?,
 ) : RioRequest
 
 @Serializable
